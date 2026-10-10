@@ -1,2 +1,5 @@
-# astroinsight-pro
-Advanced Kundli chart analysis and astrological predictions app
+node_modules
+npm-debug.log*
+.DS_Store
+.env
+coverage

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AstroInsight Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="theme-orb"></div>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">✦</span>
+        <span>AstroInsight Pro</span>
+      </div>
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">☾</button>
+    </header>
+
+    <main class="container">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Kundli-style astrology dashboard</p>
+          <h1>See your cosmic blueprint.</h1>
+          <p>
+            Explore your sign, nakshatra, house themes, and prediction insights in a personalized reading.
+          </p>
+        </div>
+
+        <form id="astrologyForm" class="form-card">
+          <h2>Generate astrology chart</h2>
+
+          <label>
+            <span>Name</span>
+            <input type="text" id="name" placeholder="Your name" />
+          </label>
+
+          <div class="two-col">
+            <label>
+              <span>Date of birth</span>
+              <input type="date" id="birthDate" required />
+            </label>
+
+            <label>
+              <span>Time of birth</span>
+              <input type="time" id="birthTime" />
+            </label>
+          </div>
+
+          <label>
+            <span>Place of birth</span>
+            <input type="text" id="birthPlace" placeholder="e.g. Mumbai, India" />
+          </label>
+
+          <button type="submit" class="primary-btn">Reveal My Chart</button>
+        </form>
+      </section>
+
+      <section id="resultSection" class="result-section hidden">
+        <div class="card overview-card">
+          <div class="title-row">
+            <div>
+              <p class="label">Your Sign</p>
+              <h3 id="signText">Aries</h3>
+            </div>
+            <div id="signIcon" class="icon">♈</div>
+          </div>
+          <p id="summaryText" class="summary"></p>
+
+          <div class="stats-grid">
+            <div>
+              <span>Element</span>
+              <strong id="elementText">Fire</strong>
+            </div>
+            <div>
+              <span>Lucky Color</span>
+              <strong id="colorText">Red</strong>
+            </div>
+            <div>
+              <span>Lucky Number</span>
+              <strong id="numberText">9</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="card chart-card">
+          <h3>Core chart</h3>
+          <div class="mini-grid">
+            <div class="mini-box">
+              <span>Moon sign</span>
+              <strong id="moonText">Sagittarius</strong>
+            </div>
+            <div class="mini-box">
+              <span>Rising sign</span>
+              <strong id="risingText">Leo</strong>
+            </div>
+            <div class="mini-box">
+              <span>Rashi</span>
+              <strong id="rashiText">Aries</strong>
+            </div>
+            <div class="mini-box">
+              <span>Nakshatra</span>
+              <strong id="nakshatraText">Ashwini</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="card traits-card">
+          <h3>Personality traits</h3>
+          <ul id="traitsList"></ul>
+        </div>
+
+        <div class="card focus-card">
+          <h3>Life theme</h3>
+          <p id="lifeThemeText"></p>
+          <p id="doshaText" class="muted"></p>
+        </div>
+
+        <div class="card house-card">
+          <h3>House themes</h3>
+          <div class="house-grid">
+            <div>
+              <span>Career</span>
+              <p id="careerHouseText"></p>
+            </div>
+            <div>
+              <span>Love</span>
+              <p id="loveHouseText"></p>
+            </div>
+            <div>
+              <span>Money</span>
+              <p id="moneyHouseText"></p>
+            </div>
+            <div>
+              <span>Health</span>
+              <p id="healthHouseText"></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card predictions-card">
+          <h3>Predictions</h3>
+          <div class="prediction-list">
+            <article>
+              <h4>Career</h4>
+              <p id="careerPredictionText"></p>
+            </article>
+            <article>
+              <h4>Love</h4>
+              <p id="lovePredictionText"></p>
+            </article>
+            <article>
+              <h4>Finance</h4>
+              <p id="moneyPredictionText"></p>
+            </article>
+            <article>
+              <h4>Health</h4>
+              <p id="healthPredictionText"></p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

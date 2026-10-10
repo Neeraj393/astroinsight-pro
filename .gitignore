@@ -1,0 +1,94 @@
+const form = document.getElementById('astrologyForm');
+const resultSection = document.getElementById('resultSection');
+const themeToggle = document.getElementById('themeToggle');
+
+const signText = document.getElementById('signText');
+const signIcon = document.getElementById('signIcon');
+const summaryText = document.getElementById('summaryText');
+const elementText = document.getElementById('elementText');
+const colorText = document.getElementById('colorText');
+const numberText = document.getElementById('numberText');
+const moonText = document.getElementById('moonText');
+const risingText = document.getElementById('risingText');
+const rashiText = document.getElementById('rashiText');
+const nakshatraText = document.getElementById('nakshatraText');
+const traitsList = document.getElementById('traitsList');
+const lifeThemeText = document.getElementById('lifeThemeText');
+const doshaText = document.getElementById('doshaText');
+const careerHouseText = document.getElementById('careerHouseText');
+const loveHouseText = document.getElementById('loveHouseText');
+const moneyHouseText = document.getElementById('moneyHouseText');
+const healthHouseText = document.getElementById('healthHouseText');
+const careerPredictionText = document.getElementById('careerPredictionText');
+const lovePredictionText = document.getElementById('lovePredictionText');
+const moneyPredictionText = document.getElementById('moneyPredictionText');
+const healthPredictionText = document.getElementById('healthPredictionText');
+
+const renderReport = (report) => {
+  signText.textContent = report.sign;
+  signIcon.textContent = report.icon;
+  summaryText.textContent = report.summary;
+  elementText.textContent = report.element;
+  colorText.textContent = report.luckyColor;
+  numberText.textContent = report.luckyNumber;
+  moonText.textContent = report.moonSign;
+  risingText.textContent = report.risingSign;
+  rashiText.textContent = report.rashi;
+  nakshatraText.textContent = report.nakshatra;
+
+  traitsList.innerHTML = report.traits.map((trait) => `<li>${trait}</li>`).join('');
+
+  lifeThemeText.textContent = report.lifeTheme;
+  doshaText.textContent = report.dosha;
+
+  careerHouseText.textContent = report.houseThemes.career;
+  loveHouseText.textContent = report.houseThemes.love;
+  moneyHouseText.textContent = report.houseThemes.money;
+  healthHouseText.textContent = report.houseThemes.health;
+
+  careerPredictionText.textContent = report.predictions.career;
+  lovePredictionText.textContent = report.predictions.love;
+  moneyPredictionText.textContent = report.predictions.money;
+  healthPredictionText.textContent = report.predictions.health;
+
+  resultSection.classList.remove('hidden');
+};
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const payload = {
+    name: document.getElementById('name').value.trim(),
+    birthDate: document.getElementById('birthDate').value,
+    birthTime: document.getElementById('birthTime').value,
+    birthPlace: document.getElementById('birthPlace').value.trim()
+  };
+
+  if (!payload.birthDate) {
+    alert('Please enter your date of birth.');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/astrology/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Unable to generate chart.');
+    }
+
+    const report = await response.json();
+    renderReport(report);
+  } catch (error) {
+    alert(error.message);
+  }
+});
+
+themeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('light-theme');
+  themeToggle.textContent = document.body.classList.contains('light-theme') ? '☀' : '☾';
+});

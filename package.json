@@ -1,0 +1,21 @@
+{
+  "name": "astroinsight-pro",
+  "version": "1.0.0",
+  "description": "Full-stack astrology app with Kundli-style analysis and predictions",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "astrology",
+    "kundli",
+    "predictions",
+    "fullstack"
+  ],
+  "author": "Neeraj393",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

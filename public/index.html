@@ -1,0 +1,441 @@
+const express = require('express');
+const path = require('path');
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
+const zodiacData = {
+  Aries: {
+    icon: '♈',
+    element: 'Fire',
+    summary: 'Bold, courageous, and driven by action.',
+    traits: ['Confident', 'Independent', 'Straightforward', 'Energetic'],
+    luckyColor: 'Red',
+    luckyNumber: 9,
+    houseThemes: {
+      career: 'Leadership roles and high-impact opportunities are favoured.',
+      love: 'Passionate relationships thrive with honesty and courage.',
+      money: 'Risk-taking may bring quick returns if balanced with discipline.',
+      health: 'Keep energy stable with exercise and regular routines.'
+    }
+  },
+  Taurus: {
+    icon: '♉',
+    element: 'Earth',
+    summary: 'Grounded, loyal, and deeply values comfort and stability.',
+    traits: ['Steady', 'Sensual', 'Practical', 'Patient'],
+    luckyColor: 'Green',
+    luckyNumber: 6,
+    houseThemes: {
+      career: 'Steady growth, finance, and long-term planning are strong.',
+      love: 'Commitment and emotional security matter deeply.',
+      money: 'Savings, assets, and practical investments will be fruitful.',
+      health: 'Balance rest and routine to protect physical stamina.'
+    }
+  },
+  Gemini: {
+    icon: '♊',
+    element: 'Air',
+    summary: 'Curious, expressive, and mentally agile.',
+    traits: ['Adaptable', 'Witty', 'Social', 'Quick-thinking'],
+    luckyColor: 'Yellow',
+    luckyNumber: 5,
+    houseThemes: {
+      career: 'Communication, media, and networking can create momentum.',
+      love: 'Intellectual connection sparks attraction and curiosity.',
+      money: 'Multiple income streams may emerge through ideas and skills.',
+      health: 'Monitor stress levels and maintain mental balance.'
+    }
+  },
+  Cancer: {
+    icon: '♋',
+    element: 'Water',
+    summary: 'Nurturing, sensitive, and emotionally intuitive.',
+    traits: ['Protective', 'Empathetic', 'Intuitive', 'Home-loving'],
+    luckyColor: 'Silver',
+    luckyNumber: 2,
+    houseThemes: {
+      career: 'A people-focused or service-based path brings fulfillment.',
+      love: 'Deep emotional bonding and security matter most.',
+      money: 'Financial growth improves when you plan with care and caution.',
+      health: 'Prioritize emotional well-being and peaceful routines.'
+    }
+  },
+  Leo: {
+    icon: '♌',
+    element: 'Fire',
+    summary: 'Confident, creative, and naturally magnetic.',
+    traits: ['Charismatic', 'Creative', 'Generous', 'Passionate'],
+    luckyColor: 'Gold',
+    luckyNumber: 1,
+    houseThemes: {
+      career: 'Recognition and leadership opportunities may rise steadily.',
+      love: 'Romance blooms when confidence and warmth are balanced.',
+      money: 'A bold idea can bring strong financial rewards.',
+      health: 'Protect your energy and avoid emotional burnout.'
+    }
+  },
+  Virgo: {
+    icon: '♍',
+    element: 'Earth',
+    summary: 'Analytical, disciplined, and detail-oriented.',
+    traits: ['Practical', 'Precise', 'Helpful', 'Thoughtful'],
+    luckyColor: 'Sage',
+    luckyNumber: 4,
+    houseThemes: {
+      career: 'Order, structure, and refinement create strong progress.',
+      love: 'Trust deepens through reliability and thoughtful care.',
+      money: 'Long-term financial stability grows through smart planning.',
+      health: 'A structured routine improves both energy and balance.'
+    }
+  },
+  Libra: {
+    icon: '♎',
+    element: 'Air',
+    summary: 'Harmonious, elegant, and relationship-driven.',
+    traits: ['Diplomatic', 'Charming', 'Balanced', 'Aesthetic'],
+    luckyColor: 'Pink',
+    luckyNumber: 7,
+    houseThemes: {
+      career: 'Partnerships, design, and people-focused work are especially fruitful.',
+      love: 'Harmony and communication lead to lasting connection.',
+      money: 'Balanced decision-making is key to steady gains.',
+      health: 'Mental peace directly influences overall well-being.'
+    }
+  },
+  Scorpio: {
+    icon: '♏',
+    element: 'Water',
+    summary: 'Intense, powerful, and deeply transformative.',
+    traits: ['Magnetic', 'Intuitive', 'Focused', 'Resilient'],
+    luckyColor: 'Crimson',
+    luckyNumber: 8,
+    houseThemes: {
+      career: 'Deep focus and strategic moves can create major breakthroughs.',
+      love: 'Passion is intense, but trust is essential for depth.',
+      money: 'Big opportunities appear through determination and timing.',
+      health: 'Emotional release and rest support resilience.'
+    }
+  },
+  Sagittarius: {
+    icon: '♐',
+    element: 'Fire',
+    summary: 'Optimistic, adventurous, and restless for growth.',
+    traits: ['Honest', 'Free-spirited', 'Inspiring', 'Curious'],
+    luckyColor: 'Purple',
+    luckyNumber: 3,
+    houseThemes: {
+      career: 'Travel, teaching, philosophy, and big goals suit your rhythm.',
+      love: 'Freedom and shared vision keep the spark alive.',
+      money: 'Opportunity increases when you are open to movement and growth.',
+      health: 'Stay active and keep optimism high for vitality.'
+    }
+  },
+  Capricorn: {
+    icon: '♑',
+    element: 'Earth',
+    summary: 'Disciplined, ambitious, and built for long-term success.',
+    traits: ['Focused', 'Responsible', 'Patient', 'Determined'],
+    luckyColor: 'Brown',
+    luckyNumber: 8,
+    houseThemes: {
+      career: 'Structured ambition and endurance are powerful advantages.',
+      love: 'Security and loyalty create a strong foundation.',
+      money: 'The biggest rewards come through patience and consistent effort.',
+      health: 'Prioritize posture, sleep, and stress management.'
+    }
+  },
+  Aquarius: {
+    icon: '♒',
+    element: 'Air',
+    summary: 'Inventive, independent, and future-minded.',
+    traits: ['Original', 'Visionary', 'Humanitarian', 'Unconventional'],
+    luckyColor: 'Electric Blue',
+    luckyNumber: 11,
+    houseThemes: {
+      career: 'Innovation and social impact bring meaningful momentum.',
+      love: 'Freedom and mutual respect attract the right connection.',
+      money: 'Unexpected opportunities arise through original thinking.',
+      health: 'Protect mental energy and maintain routines that support clarity.'
+    }
+  },
+  Pisces: {
+    icon: '♓',
+    element: 'Water',
+    summary: 'Dreamy, compassionate, and spiritually attuned.',
+    traits: ['Sensitive', 'Creative', 'Empathetic', 'Intuitive'],
+    luckyColor: 'Sea Green',
+    luckyNumber: 7,
+    houseThemes: {
+      career: 'Creative, spiritual, or healing paths can be deeply fulfilling.',
+      love: 'Emotional depth and a soft approach build strong bonds.',
+      money: 'Intuition helps, but practical boundaries improve stability.',
+      health: 'Rest and emotional balance are especially important.'
+    }
+  }
+};
+
+const nakshatraNames = [
+  'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra', 'Punarvasu', 'Pushya',
+  'Ashlesha', 'Magha', 'Purva Phalguni', 'Uttara Phalguni', 'Hasta', 'Chitra', 'Swati', 'Vishakha',
+  'Anuradha', 'Jyeshtha', 'Mula', 'Purva Shadha', 'Uttara Shadha', 'Shravana', 'Dhanishta',
+  'Shatabhisha', 'Purva Bhadrapada', 'Uttara Bhadrapada', 'Revati'
+];
+
+const zodiacOrder = Object.keys(zodiacData);
+
+function getZodiacSign(dateString) {
+  const date = new Date(dateString);
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  for (const sign of zodiacOrder) {
+    const { start, end } = getSignRange(sign);
+    const startDate = new Date(2000, start.month - 1, start.day);
+    const endDate = new Date(2000, end.month - 1, end.day);
+    const current = new Date(2000, month - 1, day);
+
+    if (start.month > end.month) {
+      if (current >= startDate || current <= endDate) return sign;
+    } else if (current >= startDate && current <= endDate) {
+      return sign;
+    }
+  }
+
+  return 'Capricorn';
+}
+
+function getSignRange(sign) {
+  const ranges = {
+    Aries: { start: { month: 3, day: 21 }, end: { month: 4, day: 19 } },
+    Taurus: { start: { month: 4, day: 20 }, end: { month: 5, day: 20 } },
+    Gemini: { start: { month: 5, day: 21 }, end: { month: 6, day: 20 } },
+    Cancer: { start: { month: 6, day: 21 }, end: { month: 7, day: 22 } },
+    Leo: { start: { month: 7, day: 23 }, end: { month: 8, day: 22 } },
+    Virgo: { start: { month: 8, day: 23 }, end: { month: 9, day: 22 } },
+    Libra: { start: { month: 9, day: 23 }, end: { month: 10, day: 22 } },
+    Scorpio: { start: { month: 10, day: 23 }, end: { month: 11, day: 21 } },
+    Sagittarius: { start: { month: 11, day: 22 }, end: { month: 12, day: 21 } },
+    Capricorn: { start: { month: 12, day: 22 }, end: { month: 1, day: 19 } },
+    Aquarius: { start: { month: 1, day: 20 }, end: { month: 2, day: 18 } },
+    Pisces: { start: { month: 2, day: 19 }, end: { month: 3, day: 20 } }
+  };
+
+  return ranges[sign];
+}
+
+function getMoonSign(sign) {
+  const map = {
+    Aries: 'Sagittarius',
+    Taurus: 'Cancer',
+    Gemini: 'Virgo',
+    Cancer: 'Pisces',
+    Leo: 'Scorpio',
+    Virgo: 'Capricorn',
+    Libra: 'Gemini',
+    Scorpio: 'Aries',
+    Sagittarius: 'Leo',
+    Capricorn: 'Aquarius',
+    Aquarius: 'Taurus',
+    Pisces: 'Libra'
+  };
+
+  return map[sign] || 'Pisces';
+}
+
+function getRisingSign(sign) {
+  const map = {
+    Aries: 'Leo',
+    Taurus: 'Virgo',
+    Gemini: 'Libra',
+    Cancer: 'Scorpio',
+    Leo: 'Sagittarius',
+    Virgo: 'Capricorn',
+    Libra: 'Aquarius',
+    Scorpio: 'Pisces',
+    Sagittarius: 'Aries',
+    Capricorn: 'Taurus',
+    Aquarius: 'Gemini',
+    Pisces: 'Cancer'
+  };
+
+  return map[sign] || 'Libra';
+}
+
+function getNakshatra(dateString) {
+  const date = new Date(dateString);
+  const start = new Date('2000-01-01T00:00:00Z');
+  const diffDays = Math.floor((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  const index = ((diffDays % 27) + 27) % 27;
+  return nakshatraNames[index];
+}
+
+function getDoshaSummary(sign) {
+  const map = {
+    Aries: 'You carry a strong fire energy; channel it into focused action instead of impulsive decisions.',
+    Taurus: 'A stable and grounded mind helps you flourish; avoid over-indulgence or rigidity.',
+    Gemini: 'Your mind moves fast; grounding your thoughts will improve clarity and emotional balance.',
+    Cancer: 'Sensitivity is a gift; protect your energy and avoid over-attaching to emotional outcomes.',
+    Leo: 'Your confidence is a strength; use it with humility to deepen relationships.',
+    Virgo: 'Perfectionism can become a trap; release control where flexibility is needed.',
+    Libra: 'Balance is essential; do not avoid difficult conversations for peace alone.',
+    Scorpio: 'Powerful intuition can be transformative; trust it without becoming controlling.',
+    Sagittarius: 'Freedom is important; avoid being reckless with time, truth, or trust.',
+    Capricorn: 'Discipline helps you rise; keep room for softness and spontaneity.',
+    Aquarius: 'Originality is a gift; stay connected to community and emotional honesty.',
+    Pisces: 'Empathy is your gift; establish boundaries so compassion does not drain you.'
+  };
+
+  return map[sign] || 'Your path is guided by growth, resilience, and alignment.';
+}
+
+function getLifeTheme(sign) {
+  const map = {
+    Aries: 'Leadership and personal growth are your major callings.',
+    Taurus: 'Stability, value, and self-trust are your greatest lessons.',
+    Gemini: 'Learning, communication, and connection expand your destiny.',
+    Cancer: 'Emotional safety and belonging are the foundation of your path.',
+    Leo: 'Purpose shines through creativity, courage, and visibility.',
+    Virgo: 'Service, refinement, and practical wisdom guide your life.',
+    Libra: 'Harmony, beauty, and meaningful relationships shape your journey.',
+    Scorpio: 'Transformation and deep emotional truth define your growth.',
+    Sagittarius: 'Freedom, wisdom, and travel create your life momentum.',
+    Capricorn: 'Achievement, discipline, and legacy are central to your path.',
+    Aquarius: 'Innovation, vision, and human impact define your purpose.',
+    Pisces: 'Spirituality, intuition, and compassion guide your soul journey.'
+  };
+
+  return map[sign] || 'Growth comes through alignment, courage, and self-trust.';
+}
+
+function buildPrediction(sign, label) {
+  const predictions = {
+    career: {
+      Aries: 'A bold move in leadership, entrepreneurship, or initiative-driven work will support your momentum.',
+      Taurus: 'Career growth is strongest when you remain patient, consistent, and mindful of long-term gains.',
+      Gemini: 'A communication-heavy role, project, or opportunity will open doors through your ideas.',
+      Cancer: 'People-focused work, service, care, or leadership in a nurturing environment will bring success.',
+      Leo: 'Recognition and visibility are coming; your natural charisma can attract a meaningful opportunity.',
+      Virgo: 'A structured, efficient, and detail-driven approach will yield strong results and trust.',
+      Libra: 'Partnerships, design, diplomacy, or creative collaboration will support your professional rise.',
+      Scorpio: 'A strategic decision or deep transformation in your work life can create major progress.',
+      Sagittarius: 'Travel, teaching, philosophy, or expansion-oriented work is especially auspicious.',
+      Capricorn: 'Your discipline will attract serious opportunities and long-term rewards.',
+      Aquarius: 'Innovation, technology, or community-driven ideas will thrive when you trust your vision.',
+      Pisces: 'Creative, spiritual, or emotionally intelligent work can be especially meaningful and successful.'
+    },
+    love: {
+      Aries: 'Passion is high; honest communication will deepen attraction and trust.',
+      Taurus: 'Emotional stability and loyalty are the foundation of harmony in love.',
+      Gemini: 'A partner who keeps things lively and intellectually engaging will suit you.',
+      Cancer: 'Your emotional depth is a strength; security and gentleness will create real closeness.',
+      Leo: 'Your warmth and confidence are attractive; make room for mutual admiration.',
+      Virgo: 'Thoughtfulness and consistency will strengthen emotional intimacy.',
+      Libra: 'Balance, romance, and harmony will bring genuine connection.',
+      Scorpio: 'Depth, trust, and intensity are the key to meaningful love.',
+      Sagittarius: 'A free-spirited connection with room for growth keeps the spark alive.',
+      Capricorn: 'Long-term love is strongest when both people value commitment and respect.',
+      Aquarius: 'A relationship based on freedom, ideas, and authenticity will feel most alive.',
+      Pisces: 'Compassion and emotional presence create beautiful, soulful romantic bonds.'
+    },
+    money: {
+      Aries: 'Risk can be rewarding, but a clear plan will protect gains.',
+      Taurus: 'Steady financial choices and practical planning will support stability.',
+      Gemini: 'Ideas, momentum, and flexible income paths could increase earnings.',
+      Cancer: 'Careful budgeting and emotional discipline will improve financial security.',
+      Leo: 'Bold financial moves can bring results when backed by confidence and patience.',
+      Virgo: 'Smart budgeting and methodical planning are your strongest advantage.',
+      Libra: 'Partnerships and balanced decision-making help you grow financially.',
+      Scorpio: 'Strategic investments or private opportunities may bring major rewards.',
+      Sagittarius: 'Growth comes through movement, learning, and broad opportunities.',
+      Capricorn: 'Patient effort and disciplined planning will lead to long-term wealth.',
+      Aquarius: 'Original ideas and unconventional options may unlock surprising gains.',
+      Pisces: 'Creative income sources and intuitive choices can become financially meaningful.'
+    },
+    health: {
+      Aries: 'Keep your body active and your mind grounded to avoid burnout.',
+      Taurus: 'Routine, rest, and digestion-related care are especially important.',
+      Gemini: 'Stress management and mental calm will protect your vitality.',
+      Cancer: 'Emotional balance and restful routines are essential for vitality.',
+      Leo: 'Protect your energy and avoid overexertion or emotional strain.',
+      Virgo: 'Structure and consistency will support both physical and mental well-being.',
+      Libra: 'Balance work, rest, and emotional peace to stay strong.',
+      Scorpio: 'Emotional release and deep rest support resilience and clarity.',
+      Sagittarius: 'Movement, travel, and a healthy outlook improve your well-being.',
+      Capricorn: 'Recovery, sleep, and posture are essential factors in your health.',
+      Aquarius: 'Regular habits and emotional steadiness support long-term wellness.',
+      Pisces: 'Rest, hydration, and emotional boundaries will safeguard your energy.'
+    }
+  };
+
+  return predictions[label]?.[sign] || 'Stay open to change and trust your inner timing.';
+}
+
+function generateAstrologyReport(payload) {
+  const sign = getZodiacSign(payload.birthDate);
+  const moonSign = getMoonSign(sign);
+  const risingSign = getRisingSign(sign);
+  const nakshatra = getNakshatra(payload.birthDate);
+  const data = zodiacData[sign];
+
+  const predictions = {
+    career: buildPrediction(sign, 'career'),
+    love: buildPrediction(sign, 'love'),
+    money: buildPrediction(sign, 'money'),
+    health: buildPrediction(sign, 'health')
+  };
+
+  return {
+    name: payload.name || 'Seeker',
+    birthDate: payload.birthDate,
+    birthPlace: payload.birthPlace || 'Not provided',
+    birthTime: payload.birthTime || 'Not provided',
+    sign,
+    icon: data.icon,
+    element: data.element,
+    summary: data.summary,
+    traits: data.traits,
+    luckyColor: data.luckyColor,
+    luckyNumber: data.luckyNumber,
+    moonSign,
+    risingSign,
+    nakshatra,
+    rashi: sign,
+    dosha: getDoshaSummary(sign),
+    lifeTheme: getLifeTheme(sign),
+    houseThemes: data.houseThemes,
+    predictions,
+    currentFocus: `The current phase supports personal growth in ${data.houseThemes.career.toLowerCase()}`,
+    aura: `${sign} energy is naturally ${data.element.toLowerCase()} and magnetic in social and professional spaces.`
+  };
+}
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'AstroInsight backend is running.' });
+});
+
+app.post('/api/astrology/analyze', (req, res) => {
+  const { name, birthDate, birthTime, birthPlace } = req.body || {};
+
+  if (!birthDate) {
+    return res.status(400).json({ error: 'Birth date is required.' });
+  }
+
+  try {
+    const report = generateAstrologyReport({ name, birthDate, birthTime, birthPlace });
+    res.json(report);
+  } catch (error) {
+    res.status(500).json({ error: 'Unable to generate astrology report.', details: error.message });
+  }
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, () => {
+  console.log(`AstroInsight app running on http://localhost:${PORT}`);
+});
